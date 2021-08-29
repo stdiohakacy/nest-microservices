@@ -24,16 +24,22 @@ export class ProductController {
 
     @Post()
     async create(@Body() productDTO: CreateProductDTO): Promise<Product> {
-        return await this.productService.create(productDTO);
+        const product = await this.productService.create(productDTO);
+        this.client.emit("product_created", product);
+        return product;
     }
 
     @Put(':id')
     async update(@Param('id') id: number, @Body() productDTO: UpdateProductDTO) {
-        return await this.productService.update(id, productDTO);
+        const product = await this.productService.update(id, productDTO);
+        this.client.emit("product_updated", product);
+        return product;
     }
 
     @Delete(':id')
     async delete(@Param('id') id: number): Promise<boolean> {
-        return await this.productService.delete(id);
+        const isDeleted = await this.productService.delete(id);
+        this.client.emit("product_deleted", id);        
+        return isDeleted;
     }
 }
