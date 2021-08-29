@@ -1,15 +1,19 @@
 import { Product } from './product.entity';
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put } from '@nestjs/common';
 import { CreateProductDTO } from './dto/create-product.dto';
 import { ProductService } from './product.service';
 import { UpdateProductDTO } from './dto/update-product.dto';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Controller('products')
 export class ProductController {
-    constructor(private readonly productService: ProductService) {}
+    constructor(private readonly productService: ProductService,
+        @Inject("PRODUCT_SERVICE") private readonly client: ClientProxy,
+    ) {}
     
     @Get()
     async getAll(): Promise<Product[]> {
+        this.client.emit("hello", "data test");
         return await this.productService.getAll();
     }
 
