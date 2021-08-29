@@ -38,8 +38,8 @@ export class ProductController {
 
     @Delete(':id')
     async delete(@Param('id') id: number): Promise<boolean> {
-        const isDeleted = await this.productService.delete(id);
         this.client.emit("product_deleted", id);        
+        const isDeleted = await this.productService.delete(id);
         return isDeleted;
     }
 }
